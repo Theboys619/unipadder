@@ -1,0 +1,20 @@
+{
+  "name": "unipad",
+  "version": "1.0.0",
+  "description": "Unipad reader",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Theboys619",
+    "unipad"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "novation-launchpadmk2": "^1.0.5",
+    "socket.io": "^2.3.0"
+  }
+}

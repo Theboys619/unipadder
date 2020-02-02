@@ -1,0 +1,102 @@
+o 6 1 a 3
+d 30
+o 5 1 a 3
+o 6 1 a 7
+o 6 2 a 3
+o 7 1 a 3
+d 30
+o 4 1 a 3
+o 5 1 a 7
+o 6 1 a 6
+o 6 2 a 7
+o 6 3 a 3
+o 7 1 a 7
+o 8 1 a 3
+d 30
+o 3 1 a 3
+o 4 1 a 7
+o 5 1 a 6
+o 6 1 a 5
+o 6 2 a 6
+o 6 3 a 7
+o 6 4 a 3
+o 7 1 a 6
+o 8 1 a 7
+d 30
+o 2 1 a 3
+o 3 1 a 7
+o 4 1 a 6
+o 5 1 a 5
+o 6 1 a 60
+o 6 2 a 5
+o 6 3 a 6
+o 6 4 a 7
+o 6 5 a 3
+o 7 1 a 5
+o 8 1 a 6
+d 30
+o 1 1 a 3
+o 2 1 a 7
+o 3 1 a 6
+o 4 1 a 5
+o 5 1 a 60
+f 6 1 
+o 6 2 a 60
+o 6 3 a 5
+o 6 4 a 6
+o 6 5 a 7
+o 6 6 a 3
+o 7 1 a 60
+o 8 1 a 5
+d 30
+o 1 1 a 7
+o 2 1 a 6
+o 3 1 a 5
+o 4 1 a 60
+f 5 1 
+f 6 2 
+o 6 3 a 60
+o 6 4 a 5
+o 6 5 a 6
+o 6 6 a 7
+o 6 7 a 3
+f 7 1 
+o 8 1 a 60
+d 30
+o 1 1 a 7
+o 2 1 a 5
+o 3 1 a 60
+f 4 1 
+f 6 3 
+o 6 4 a 60
+o 6 5 a 5
+o 6 6 a 6
+o 6 7 a 7
+o 6 8 a 3
+f 8 1 
+d 30
+o 1 1 a 5
+o 2 1 a 60
+f 3 1 
+f 6 4 
+o 6 5 a 60
+o 6 6 a 5
+o 6 7 a 6
+o 6 8 a 7
+d 30
+o 1 1 a 60
+f 2 1 
+f 6 5 
+o 6 6 a 60
+o 6 7 a 5
+o 6 8 a 6
+d 30
+f 1 1 
+f 6 6 
+o 6 7 a 60
+o 6 8 a 5
+d 30
+f 6 7 
+o 6 8 a 60
+d 30
+f 6 8 
