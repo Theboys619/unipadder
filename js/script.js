@@ -32,11 +32,26 @@ let sockets = [];
 let socketnum = 0;
 let soundsp = [];
 let soundplay;
+let unipacksdata = [];
 
 let keyX = 8;
 let keyY = 8;
 let keyLength = keyX * keyY;
 let fps = 1000;
+
+socket.emit("GetSongs");
+
+socket.on("SetSongs", function(unipacks) {
+  unipacksdata = unipacks;
+  unipacks.forEach(function(item, i) {
+    document.getElementById('songlist').innerHTML += `<div><a href='#' onclick="setUnipack('${item.foldername}')">${item.title} by ${item.producername}</a></div>`;
+  });
+});
+
+function setUnipack(song) {
+  document.getElementById('LoadState').innerText = "LoadState: Loading!";
+  socket.emit("PlayUnipack", song);
+}
 
 socket.on("PlaySound", function(filename) {
   sounds[soundlist.indexOf(filename)].play();
@@ -48,10 +63,10 @@ socket.on("LoadSounds", function(songs, songname) {
       src: `/songs/${songname}/Sounds/${songs[i]}`
     }); //p5.prototype.loadSound(`${window.location.href}songs/${songname}/Sounds/${songs[i]}`);
   }
-  alert("Sounds Loaded!");
 });
 
 socket.on("Loaded", function(data) {
+    document.getElementById('LoadState').innerText = "LoadState: Loading!";
     keyLED = data.keyLED;
     ledData = data.ledData;
     autoPlayData = data.autoPlayData;
@@ -136,6 +151,7 @@ function setData() {
         }
     }
     start = true;
+    document.getElementById('LoadState').innerText = "LoadState: Loaded!";
 }
 //
 //Play Audio
@@ -206,6 +222,7 @@ let spacingy = 5;
 
 function setup() {
     canv = createCanvas(555, 555);
+    canv.parent("launchpad");
 }
 
 function draw() {

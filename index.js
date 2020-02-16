@@ -4,6 +4,7 @@ const app = require("express")();
 const express = require("express");
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
+const client = require('discord-rich-presence')('678434014130077705');
 
 const port = 65515;
 
@@ -37,9 +38,34 @@ let pageNum = 0;
 
 let projectinfo = JSON.parse('{"title": "None", "producername": "None", "buttonx": 8, "buttony": 8, "chain": 6, "squarebutton": "true", "landscape": "true" }')
 
-let songname = "TheSpectre";
+let songname = "_Spectre";
 
-function startProject() {
+function getUnipacks(cb) {
+  let unipacks = []; // Example: { songname: { title: "Alan - Walker", producername: "Clement Show" } }
+  fs.readdir(`./songs/`, function(err, folders) {
+    for (let i in folders) {
+			unipacks.push({ foldername: folders[i], title: "", producername: "", buttonx: 8, buttony: 8, chain: 6, squarebutton: true, landscape: true });
+      fs.readdir(`./songs/${folders[i]}/`, function(err, files) {
+        for (let j in files) {
+          if (files[j].toLowerCase() === "info") {
+						let data = fs.readFileSync(path.join(__dirname, `./songs/${folders[i]}/${files[j]}`), "utf-8");
+						let lines = data.split("\n")
+						for (let k in lines) {
+							let info = lines[k].split("=");
+							let header = info[0].toLowerCase();
+
+							unipacks[i][header] = info[1];
+						}
+          }
+        }
+      });
+    }
+		setTimeout(cb, 1000, unipacks);
+  });
+}
+
+
+function startProject(cb) {
   fs.readdir(`./songs/${songname}/keyLED`, function (err, files) {
     keyLED = files;
     for (let i = 0; i < files.length; i++) {
@@ -60,6 +86,10 @@ function startProject() {
       setPackInfo(file, files[i]);
     }
   });
+
+	if (typeof cb === 'function') {
+		setTimeout(cb, 7000);
+	}
 }
 
 startProject();
@@ -79,6 +109,15 @@ function setPackInfo(filetype, file) {
 
         projectinfo[header] = info[1];
       }
+      client.updatePresence({
+        state: 'Playing a Song on Launchpad!',
+        details: `Unipack ${projectinfo.title} by ${projectinfo.producername}`,
+        largeImageKey: 'unipad',
+        largeImageText: 'Playing Unipad',
+        smallImageKey: 'novation',
+        smallImageText: `Playing ${projectinfo.title}`,
+        instance: true,
+      });
     });
   } else if (filetype === "autoplay") {
     fs.readFile(`./songs/${songname}/${file}`, "utf-8", function(err, data) {
@@ -168,6 +207,39 @@ io.on("connection", function(socket) {
 		console.log("Socket Launchpad is " + lpsocket);
 		draw(0);
 	});
+
+  socket.on("GetSongs", function() {
+    getUnipacks(function(unipacks) {
+			socket.emit("SetSongs", unipacks);
+		});
+  });
+
+  socket.on("PlayUnipack", function(song) {
+		launchpad.resetLeds();
+		keyLED = [];
+		ledData = []
+		soundFiles = [];
+		soundData = [];
+		keySounds = [];
+		autoPlayData = [];
+		pressedKey = [];
+		data = [];
+		keyColors = [];
+		sequences = [];
+		sequenceData = []
+		ledChain = [];
+		pageNum = 0;
+		launchpad.LedOn(89, 2);
+
+		projectinfo = JSON.parse('{"title": "None", "producername": "None", "buttonx": 8, "buttony": 8, "chain": 6, "squarebutton": "true", "landscape": "true" }')
+
+    songname = song;
+    startProject(function() {
+			socket.emit("LoadSounds", soundFiles, songname);
+	    getData();
+	    socket.emit("Loaded", { keyX: projectinfo.buttonx, keyY: projectinfo.buttony, keyLED: keyLED, ledData: ledData, keySounds: keySounds, autoPlayData: autoPlayData, data: data, pressedKey: pressedKey, keyColors: keyColors, chain: projectinfo.chain, sockets: sockets.length-1})
+		});
+  });
 });
 
 var conversion8x8 = [81, 82, 83, 84, 85, 86, 87, 88, 71, 72, 73, 74, 75, 76, 77, 78, 61, 62, 63, 64, 65, 66, 67, 68, 51, 52, 53, 54, 55, 56, 57, 58, 41, 42, 43, 44, 45, 46, 47, 48, 31, 32, 33, 34, 35, 36, 37, 38, 21, 22, 23, 24, 25, 26, 27, 28, 11, 12, 13, 14, 15, 16, 17, 18];
@@ -272,22 +344,32 @@ function Led(page, key, sequencenum, i) {
 
 function LedOn(x, y, colorCode, vel) {
     let led = x * projectinfo.buttony + y;
-    pressedKey[led] = 1;
-    if (colorCode) {
-        keyColors[led] = 0;
-    } else if (vel) {
-        keyColors[led] = parseInt(vel);
-    }
+		pressedKey[led] = 1;
+	  if (colorCode) {
+	  	keyColors[led] = 0;
+	  } else if (vel) {
+	  	keyColors[led] = parseInt(vel);
+	  }
 }
 
 function LedOff(x, y) {
     let led = x * projectinfo.buttony + y;
-    pressedKey[led] = 0;
-    keyColors[led] = 0;
-		if (projectinfo.buttonx == 8 && projectinfo.buttony == 8) {
-			launchpad.LedOff(conversion8x8[led]);
-		} else if (projectinfo.buttonx == 9 && projectinfo.buttony == 9) {
-			launchpad.LedOff(conversion9x9[led]);
+		if (led) {
+			pressedKey[led] = 0;
+		  keyColors[led] = 0;
+			if (projectinfo.buttonx == 8 && projectinfo.buttony == 8) {
+				launchpad.LedOff(conversion8x8[led]);
+			} else if (projectinfo.buttonx == 9 && projectinfo.buttony == 9) {
+				launchpad.LedOff(conversion9x9[led]);
+			}
+		} else {
+			pressedKey[0] = 0;
+		  keyColors[0] = 0;
+			if (projectinfo.buttonx == 8 && projectinfo.buttony == 8) {
+				launchpad.LedOff(conversion8x8[0]);
+			} else if (projectinfo.buttonx == 9 && projectinfo.buttony == 9) {
+				launchpad.LedOff(conversion9x9[0]);
+			}
 		}
 }
 

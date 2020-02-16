@@ -2,14 +2,31 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Browser Unipad</title>
+    <style>
+      .flexbox {
+        display: flex;
+      }
+      #songlist {
+        flex-grow: 1;
+        margin-left: 5px;
+        width: 500px;
+        height: 555px;
+        background-color: lightgrey;
+      }
+    </style>
   </head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" charset="utf-8"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js" charset="utf-8"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.3/howler.min.js" charset="utf-8"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.js" charset="utf-8"></script>
   <body>
-    SOUND:
+    <div class="flexbox">
+      <div id="launchpad"></div>
+      <div id="songlist"></div>
+    </div>
+    <br>
+    <div id="LoadState">LoadState: Not Loaded!</div>
     <script src="../js/script.js"></script>
   </body>
 </html>
