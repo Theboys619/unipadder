@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "discord-rich-presence": "0.0.8",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "novation-launchpadmk2": "^1.0.5",
     "socket.io": "^2.3.0"
   }
